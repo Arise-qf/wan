@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>起飞ohh</title>
+    <title>起飞oh</title>
     <style>
     body {
         margin: 0;
@@ -34,41 +34,42 @@
         padding: 20px;
     }
 
-    #content, #media-container {
+    /* 👇 只对 #content 使用 transform 居中 */
+    #content {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
+        font-size: 30vmin;
         opacity: 1;
         transition: opacity 0.5s ease;
     }
 
-    /* 👇 以下是新增/修改的部分 */
-    #content {
-        font-size: 30vmin; /* 超大字体！横屏时几乎占满屏幕 */
+    /* 👇 #media-container 不使用 transform，用 flex 居中 */
+    #media-container {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 1;
+        transition: opacity 0.5s ease;
     }
 
-    #media-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
     img, video {
-    max-width: 200vmin;
-    max-height: 200vmin;
-    width: auto;
-    height: auto;
-    border-radius: 12px;
-    background: black;
-    display: block;
-    object-fit: contain;
-}
+        max-width: 200vmin;
+        max-height: 200vmin;
+        width: auto;
+        height: auto;
+        border-radius: 12px;
+        background: black;
+        display: block;
+        object-fit: contain;
+    }
 </style>
 </head>
 <body>
@@ -180,6 +181,7 @@
     </script>
 </body>
 </html>
+
 
 
 
