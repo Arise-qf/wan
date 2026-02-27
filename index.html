@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>起飞oh</title>
+    <title>起飞ohh</title>
     <style>
     body {
         margin: 0;
@@ -49,20 +49,25 @@
     }
 
     #media-container {
-    display: none;
-    max-width: 200vmin;
-    max-height: 200vmin;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
     img, video {
-    width: 100%;        /* 强制占满容器宽度 */
-    height: auto;       /* 保持比例 */
-    max-width: 200vmin;  /* 允许更大（原是受 #media-container 限制） */
+    max-width: 200vmin;
     max-height: 200vmin;
+    width: auto;
+    height: auto;
     border-radius: 12px;
     background: black;
     display: block;
-    object-fit: contain; /* 确保完整显示不裁剪 */
+    object-fit: contain;
 }
 </style>
 </head>
@@ -175,6 +180,7 @@
     </script>
 </body>
 </html>
+
 
 
 
