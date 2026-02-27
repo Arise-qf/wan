@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>7199</title>
+    <title>起飞</title>
     <style>
         body {
             margin: 0;
@@ -13,39 +13,64 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #ff69b4; /* 热粉色 */
+            background-color: #ff69b4;
             color: white;
-            font-size: 50vw;
             font-weight: bold;
             text-align: center;
             overflow: hidden;
             -webkit-text-stroke: 1px rgba(0,0,0,0.2);
             font-family: "Helvetica", "Arial", sans-serif;
+            cursor: pointer;
+        }
+
+        #rotate-tip {
+            font-size: 5vmax;
+            padding: 20px;
+        }
+
+        #content {
+            font-size: 35vmin;
+            display: none;
         }
     </style>
 </head>
 <body>
-    <!-- 初始内容会被 JS 替换 -->
-    <div id="text">加载中...</div>
+    <div id="rotate-tip">📱 请将手机横过来查看</div>
+    <div id="content">加载中...</div>
 
     <script>
-        // 预设的随机语录列表
-        const messages = [
-            "7199",
-            "妹永1",
-            "噶，如何",
-            "不如何",
-            "那怎么办",
-            "玩呗"
-        ];
-
-        // 随机选一个
+        const messages = ["7199", "妹永1", "噶，如何", "不如何", "那怎么办", "玩呗"];
         const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+        document.getElementById("content").textContent = randomMessage;
 
-        // 显示到页面
-        document.getElementById("text").textContent = randomMessage;
+        function checkOrientation() {
+            const isLandscape = window.innerWidth > window.innerHeight;
+            const tip = document.getElementById("rotate-tip");
+            const content = document.getElementById("content");
+
+            if (isLandscape) {
+                tip.style.display = "none";
+                content.style.display = "flex";
+            } else {
+                tip.style.display = "block";
+                content.style.display = "none";
+            }
+        }
+
+        // 初始检查
+        checkOrientation();
+
+        // 监听屏幕旋转或窗口变化
+        window.addEventListener("resize", checkOrientation);
+
+        // 👇 点击屏幕强制显示内容（兜底）
+        document.body.addEventListener("click", () => {
+            const content = document.getElementById("content");
+            if (content.style.display === "none") {
+                document.getElementById("rotate-tip").style.display = "none";
+                content.style.display = "flex";
+            }
+        });
     </script>
 </body>
 </html>
-
-
