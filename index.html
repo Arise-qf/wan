@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>起飞</title>
+    <title>随机语录 + 混合媒体</title>
     <style>
         body {
             margin: 0;
@@ -18,9 +18,15 @@
             font-weight: bold;
             text-align: center;
             overflow: hidden;
-            -webkit-text-stroke: 1px rgba(0,0,0,0.2);
             font-family: "Helvetica", "Arial", sans-serif;
             cursor: pointer;
+            text-shadow: 
+                -1px -1px 0 rgba(0,0,0,0.3),
+                1px -1px 0 rgba(0,0,0,0.3),
+                -1px 1px 0 rgba(0,0,0,0.3),
+                1px 1px 0 rgba(0,0,0,0.3);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         #rotate-tip {
@@ -28,47 +34,134 @@
             padding: 20px;
         }
 
-        #content {
-            font-size: 35vmin;
+        #content, #media-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        #media-container {
             display: none;
+            max-width: 90vmin;
+            max-height: 90vmin;
+        }
+
+        img, video {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 12px;
+            background: black;
+            display: block;
         }
     </style>
 </head>
 <body>
     <div id="rotate-tip">📱 请将手机横过来查看</div>
     <div id="content">加载中...</div>
+    <div id="media-container"></div>
 
     <script>
-        const messages = ["7199", "妹永1", "噶，如何", "不如何", "那怎么办", "玩呗"];
+        // 定义每条文案对应的媒体类型和文件
+        const mediaMap = {
+            "7199": { type: "video", src: "1.mp4" },
+            "妹永1": { type: "video", src: "2.mp4" },
+            "噶，如何": { type: "image", src: "3.jpg" },
+            "不如何": { type: "image", src: "4.jpg" },
+            "那怎么办": { type: "image", src: "5.jpg" },
+            "玩呗": { type: "video", src: "6.mp4" }
+        };
+
+        // 随机选择一条文案
+        const messages = Object.keys(mediaMap);
         const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+        const mediaInfo = mediaMap[randomMessage];
+
         document.getElementById("content").textContent = randomMessage;
+
+        function createMediaElement(info) {
+            if (info.type === "video") {
+                const video = document.createElement("video");
+                video.src = info.src;
+                video.muted = true;
+                video.playsinline = true;
+                video.loop = true;
+                video.setAttribute("webkit-playsinline", "true");
+                return video;
+            } else {
+                const img = document.createElement("img");
+                img.src = info.src;
+                img.alt = "媒体内容";
+                return img;
+            }
+        }
 
         function checkOrientation() {
             const isLandscape = window.innerWidth > window.innerHeight;
             const tip = document.getElementById("rotate-tip");
             const content = document.getElementById("content");
+            const mediaContainer = document.getElementById("media-container");
 
             if (isLandscape) {
                 tip.style.display = "none";
-                content.style.display = "flex";
+                content.style.display = "block";
+                mediaContainer.style.display = "block";
+                mediaContainer.innerHTML = ""; // 清空旧内容
+                mediaContainer.style.opacity = "0";
+
+                // 2秒后切换
+                setTimeout(() => {
+                    content.style.opacity = "0";
+                    setTimeout(() => {
+                        content.style.display = "none";
+                        const el = createMediaElement(mediaInfo);
+                        mediaContainer.appendChild(el);
+                        mediaContainer.style.opacity = "1";
+
+                        // 如果是视频，尝试播放
+                        if (el.tagName === "VIDEO") {
+                            el.play().catch(e => console.log("Autoplay failed:", e));
+                        }
+                    }, 500);
+                }, 2000);
+
             } else {
                 tip.style.display = "block";
                 content.style.display = "none";
+                mediaContainer.style.display = "none";
+                mediaContainer.innerHTML = "";
             }
         }
 
-        // 初始检查
         checkOrientation();
-
-        // 监听屏幕旋转或窗口变化
         window.addEventListener("resize", checkOrientation);
 
-        // 👇 点击屏幕强制显示内容（兜底）
+        // 点击兜底
         document.body.addEventListener("click", () => {
-            const content = document.getElementById("content");
-            if (content.style.display === "none") {
-                document.getElementById("rotate-tip").style.display = "none";
-                content.style.display = "flex";
+            const tip = document.getElementById("rotate-tip");
+            if (tip.style.display !== "none") {
+                tip.style.display = "none";
+                document.getElementById("content").style.display = "block";
+                document.getElementById("content").style.opacity = "1";
+                document.getElementById("media-container").style.display = "block";
+                document.getElementById("media-container").innerHTML = "";
+                document.getElementById("media-container").style.opacity = "0";
+
+                setTimeout(() => {
+                    document.getElementById("content").style.opacity = "0";
+                    setTimeout(() => {
+                        document.getElementById("content").style.display = "none";
+                        const el = createMediaElement(mediaInfo);
+                        document.getElementById("media-container").appendChild(el);
+                        document.getElementById("media-container").style.opacity = "1";
+
+                        if (el.tagName === "VIDEO") {
+                            el.play().catch(e => console.log("Play on click:", e));
+                        }
+                    }, 500);
+                }, 2000);
             }
         });
     </script>
