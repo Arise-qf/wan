@@ -49,18 +49,21 @@
     }
 
     #media-container {
-        display: none;
-        max-width: 100vmin;
-        max-height: 100vmin;
-    }
+    display: none;
+    max-width: 90vmin;
+    max-height: 90vmin;
+}
 
     img, video {
-        max-width: 100%;
-        max-height: 100%;
-        border-radius: 12px;
-        background: black;
-        display: block;
-    }
+    width: 100%;        /* 强制占满容器宽度 */
+    height: auto;       /* 保持比例 */
+    max-width: 95vmin;  /* 允许更大（原是受 #media-container 限制） */
+    max-height: 95vmin;
+    border-radius: 12px;
+    background: black;
+    display: block;
+    object-fit: contain; /* 确保完整显示不裁剪 */
+}
 </style>
 </head>
 <body>
@@ -172,6 +175,7 @@
     </script>
 </body>
 </html>
+
 
 
 
