@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>起飞oh</title>
+    <title>起飞ohh</title>
     <style>
     body {
         margin: 0;
@@ -45,7 +45,6 @@
         transition: opacity 0.5s ease;
     }
 
-    /* 👇 #media-container 不使用 transform，用 flex 居中 */
     #media-container {
         display: none;
         position: absolute;
@@ -53,22 +52,24 @@
         left: 0;
         width: 100vw;
         height: 100vh;
+        /* 可以保留 flex，但非必需 */
         display: flex;
         justify-content: center;
         align-items: center;
-        opacity: 1;
-        transition: opacity 0.5s ease;
     }
 
     img, video {
-        max-width: 120vmin;
-        max-height: 120vmin;
+        max-width: 100vmin;
+        max-height: 100vmin;
         width: auto;
         height: auto;
         border-radius: 12px;
         background: black;
-        display: block;
+        /* 👇 关键修复：用 margin: auto 替代 display: block */
+        margin: auto;
         object-fit: contain;
+        /* 确保不是 inline 元素 */
+        display: block;
     }
 </style>
 </head>
@@ -181,6 +182,7 @@
     </script>
 </body>
 </html>
+
 
 
 
