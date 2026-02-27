@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>7199</title>
+    <title>随机语录</title>
     <style>
         body {
             margin: 0;
@@ -13,38 +13,57 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #ff69b4; /* 热粉色 */
+            background-color: #ff69b4;
             color: white;
-            font-size: 50vw;
             font-weight: bold;
             text-align: center;
             overflow: hidden;
             -webkit-text-stroke: 1px rgba(0,0,0,0.2);
             font-family: "Helvetica", "Arial", sans-serif;
         }
+
+        /* 横屏时：超大字体 */
+        @media (orientation: landscape) {
+            #content {
+                font-size: 35vmin; /* 横屏用 vmin 更均衡 */
+            }
+        }
+
+        /* 竖屏时：显示提示 */
+        #rotate-tip {
+            display: block;
+            font-size: 5vmax;
+            padding: 20px;
+        }
+        @media (orientation: landscape) {
+            #rotate-tip {
+                display: none;
+            }
+        }
+
+        /* 内容区 */
+        #content {
+            display: none;
+            font-size: 50vmin;
+        }
+        @media (orientation: landscape) {
+            #content {
+                display: block;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- 初始内容会被 JS 替换 -->
-    <div id="text">加载中...</div>
+    <!-- 竖屏提示 -->
+    <div id="rotate-tip">📱 请将手机横过来查看</div>
+
+    <!-- 横屏内容 -->
+    <div id="content">加载中...</div>
 
     <script>
-        // 预设的随机语录列表
-        const messages = [
-            "7199",
-            "妹永1",
-            "噶，如何",
-            "不如何",
-            "那怎么办",
-            "玩呗"
-        ];
-
-        // 随机选一个
+        const messages = ["7199", "妹永1", "噶，如何", "不如何", "那怎么办"];
         const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-
-        // 显示到页面
-        document.getElementById("text").textContent = randomMessage;
+        document.getElementById("content").textContent = randomMessage;
     </script>
 </body>
 </html>
-
