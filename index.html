@@ -3,66 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="format-detection" content="telephone=no">
-    <title>起飞</title>
+    <title>起飞oh</title>
     <style>
         body {
             margin: 0;
             padding: 0;
             height: 100vh;
             width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             background-color: #ff69b4;
-            overflow: hidden;
-            font-family: "Helvetica", "Arial", sans-serif;
-            cursor: pointer;
-        }
-
-        #rotate-tip {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
             color: white;
             font-weight: bold;
             text-align: center;
-            font-size: 5vmax;
-            padding: 20px;
-            text-shadow: 
+            overflow: hidden;
+            font-family: "Helvetica", "Arial", sans-serif;
+            cursor: pointer;
+            text-shadow:
                 -1px -1px 0 rgba(0,0,0,0.3),
                 1px -1px 0 rgba(0,0,0,0.3),
                 -1px 1px 0 rgba(0,0,0,0.3),
                 1px 1px 0 rgba(0,0,0,0.3);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        /* 关键：缩放容器 */
-        #zoom-container {
+        #rotate-tip {
+            font-size: 5vmax;
+            padding: 20px;
+        }
+
+        #content, #media-container {
             position: absolute;
             top: 50%;
             left: 50%;
-            transform-origin: top left;
+            transform: translate(-50%, -50%);
             opacity: 1;
             transition: opacity 0.5s ease;
         }
 
-        #content {
-            color: white;
-            font-weight: bold;
-            text-align: center;
-            text-shadow: 
-                -2px -2px 0 rgba(0,0,0,0.4),
-                2px -2px 0 rgba(0,0,0,0.4),
-                -2px 2px 0 rgba(0,0,0,0.4),
-                2px 2px 0 rgba(0,0,0,0.4);
-            white-space: nowrap;
-        }
-
         #media-container {
-            margin-top: 20px;
+            display: none;
+            max-width: 90vmin;
+            max-height: 90vmin;
         }
 
         img, video {
             max-width: 100%;
-            max-height: 80vh;
+            max-height: 100%;
             border-radius: 12px;
             background: black;
             display: block;
@@ -71,12 +60,11 @@
 </head>
 <body>
     <div id="rotate-tip">📱 请将手机横过来查看</div>
-    <div id="zoom-container">
-        <div id="content">加载中...</div>
-        <div id="media-container"></div>
-    </div>
+    <div id="content">加载中...</div>
+    <div id="media-container"></div>
 
     <script>
+        // 定义每条文案对应的媒体类型和文件
         const mediaMap = {
             "7199": { type: "video", src: "1.mp4" },
             "妹永1": { type: "video", src: "2.mp4" },
@@ -86,34 +74,12 @@
             "玩呗": { type: "video", src: "6.mp4" }
         };
 
+        // 随机选择一条文案
         const messages = Object.keys(mediaMap);
         const randomMessage = messages[Math.floor(Math.random() * messages.length)];
         const mediaInfo = mediaMap[randomMessage];
 
         document.getElementById("content").textContent = randomMessage;
-
-        // 👇 核心：动态计算缩放比例
-        function applyZoom() {
-            const isLandscape = window.innerWidth > window.innerHeight;
-            const container = document.getElementById("zoom-container");
-            const tip = document.getElementById("rotate-tip");
-
-            if (!isLandscape) {
-                tip.style.display = "block";
-                container.style.display = "none";
-                return;
-            }
-
-            tip.style.display = "none";
-            container.style.display = "block";
-
-            // 基准：假设设计稿是 800px 宽
-            const baseWidth = 800;
-            const scale = Math.max(window.innerWidth, window.innerHeight) / baseWidth;
-
-            // 应用缩放
-            container.style.transform = `translate(-50%, -50%) scale(${scale})`;
-        }
 
         function createMediaElement(info) {
             if (info.type === "video") {
@@ -127,45 +93,79 @@
             } else {
                 const img = document.createElement("img");
                 img.src = info.src;
+                img.alt = "媒体内容";
                 return img;
             }
         }
 
-        function switchToMedia() {
+        function checkOrientation() {
+            const isLandscape = window.innerWidth > window.innerHeight;
+            const tip = document.getElementById("rotate-tip");
             const content = document.getElementById("content");
             const mediaContainer = document.getElementById("media-container");
-            content.style.opacity = "0";
-            setTimeout(() => {
+
+            if (isLandscape) {
+                tip.style.display = "none";
+                content.style.display = "block";
+                mediaContainer.style.display = "block";
+                mediaContainer.innerHTML = ""; // 清空旧内容
+                mediaContainer.style.opacity = "0";
+
+                // 2秒后切换
+                setTimeout(() => {
+                    content.style.opacity = "0";
+                    setTimeout(() => {
+                        content.style.display = "none";
+                        const el = createMediaElement(mediaInfo);
+                        mediaContainer.appendChild(el);
+                        mediaContainer.style.opacity = "1";
+
+                        // 如果是视频，尝试播放
+                        if (el.tagName === "VIDEO") {
+                            el.play().catch(e => console.log("Autoplay failed:", e));
+                        }
+                    }, 500);
+                }, 2000);
+
+            } else {
+                tip.style.display = "block";
                 content.style.display = "none";
-                const el = createMediaElement(mediaInfo);
-                mediaContainer.appendChild(el);
-                mediaContainer.style.opacity = "1";
-                if (el.tagName === "VIDEO") {
-                    el.play().catch(e => console.log("Play:", e));
-                }
-            }, 500);
+                mediaContainer.style.display = "none";
+                mediaContainer.innerHTML = "";
+            }
         }
 
-        // 初始检测
-        applyZoom();
-        window.addEventListener("resize", applyZoom);
-
-        // 横屏后 2 秒切换到媒体
-        setTimeout(() => {
-            if (window.innerWidth > window.innerHeight) {
-                switchToMedia();
-            }
-        }, 2000);
+        checkOrientation();
+        window.addEventListener("resize", checkOrientation);
 
         // 点击兜底
         document.body.addEventListener("click", () => {
-            if (document.getElementById("rotate-tip").style.display !== "none") {
-                document.getElementById("rotate-tip").style.display = "none";
-                document.getElementById("zoom-container").style.display = "block";
-                applyZoom();
-                setTimeout(switchToMedia, 2000);
+            const tip = document.getElementById("rotate-tip");
+            if (tip.style.display !== "none") {
+                tip.style.display = "none";
+                document.getElementById("content").style.display = "block";
+                document.getElementById("content").style.opacity = "1";
+                document.getElementById("media-container").style.display = "block";
+                document.getElementById("media-container").innerHTML = "";
+                document.getElementById("media-container").style.opacity = "0";
+
+                setTimeout(() => {
+                    document.getElementById("content").style.opacity = "0";
+                    setTimeout(() => {
+                        document.getElementById("content").style.display = "none";
+                        const el = createMediaElement(mediaInfo);
+                        document.getElementById("media-container").appendChild(el);
+                        document.getElementById("media-container").style.opacity = "1";
+
+                        if (el.tagName === "VIDEO") {
+                            el.play().catch(e => console.log("Play on click:", e));
+                        }
+                    }, 500);
+                }, 2000);
             }
         });
     </script>
 </body>
 </html>
+
+
