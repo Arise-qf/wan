@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>7199</title>
+    <title>随机语录</title>
     <style>
         body {
             margin: 0;
@@ -13,18 +13,37 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #ff69b4; 
+            background-color: #ff69b4; /* 热粉色 */
             color: white;
-            font-size: 50vw;  
+            font-size: 50vw;
             font-weight: bold;
             text-align: center;
             overflow: hidden;
-            -webkit-text-stroke: 1px rgba(0,0,0,0.2); 
+            -webkit-text-stroke: 1px rgba(0,0,0,0.2);
+            font-family: "Helvetica", "Arial", sans-serif;
         }
     </style>
 </head>
 <body>
-    7199
+    <!-- 初始内容会被 JS 替换 -->
+    <div id="text">加载中...</div>
+
+    <script>
+        // 预设的随机语录列表
+        const messages = [
+            "7199",
+            "妹永1",
+            "噶，如何",
+            "不如何",
+            "那怎么办",
+            "玩呗"
+        ];
+
+        // 随机选一个
+        const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+
+        // 显示到页面
+        document.getElementById("text").textContent = randomMessage;
+    </script>
 </body>
 </html>
-
